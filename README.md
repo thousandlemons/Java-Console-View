@@ -68,7 +68,9 @@ After the user presses enter, it will go to the parent composite menu item view.
 ```java
 class BookTaxiAction extends ActionMenuItem{
 
-	public ActionMenuItem("Booking a Taxi", "Book a taxi");
+	public ActionMenuItem(){
+		super("Booking a Taxi", "Book a taxi");
+	}
 	
 	@override
 	public void executeCustomAction() {
