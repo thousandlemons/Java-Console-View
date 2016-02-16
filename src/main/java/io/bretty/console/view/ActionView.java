@@ -1,5 +1,13 @@
 package io.bretty.console.view;
 
+/**
+ * Workflow of the default implementation:
+ * 1) print title;
+ * 2) execute custom action;
+ * 3) pause
+ * 4) go back to parent view
+ */
+
 public abstract class ActionView extends AbstractView {
 
 
@@ -17,8 +25,8 @@ public abstract class ActionView extends AbstractView {
         super(runningTitle, nameInParentMenu);
     }
 
-    public ActionView(String runningTitle, String nameInParentMenu, String pauseMessage) {
-        super(runningTitle, nameInParentMenu);
+    public ActionView(String runningTitle, String nameInParentMenu, String inputErrorMessage, String pauseMessage) {
+        super(runningTitle, nameInParentMenu, inputErrorMessage);
         this.pauseMessage = pauseMessage;
     }
 
@@ -38,13 +46,6 @@ public abstract class ActionView extends AbstractView {
         this.keyboard.nextLine();
     }
 
-    /**
-     * Workflow of the default implementation:
-     * 1) print title;
-     * 2) execute custom action;
-     * 3) pause
-     * 4) go back to parent view
-     */
     @Override
     public void display() {
         System.out.println();

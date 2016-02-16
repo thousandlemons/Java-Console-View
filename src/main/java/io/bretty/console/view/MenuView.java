@@ -7,13 +7,19 @@ import java.util.List;
 public class MenuView extends AbstractView {
 
     public static final String DEFAULT_SELECTION_MESSAGE = "Please enter a number to continue: ";
-    public static final String DEFAULT_ERROR_MESSAGE = "Invalid input. Please try again: ";
     public static final String DEFAULT_BACK_MENU_NAME = "Back";
     public static final String DEFAULT_QUIT_MENU_NAME = "Quit";
 
     private String selectionMessage = DEFAULT_SELECTION_MESSAGE;
-    private String inputErrorMessage = DEFAULT_ERROR_MESSAGE;
+
+    /**
+     * Name of the menu "Back"; you can rename it something like "GO BACK"
+     */
     private String backMenuName = DEFAULT_BACK_MENU_NAME;
+
+    /**
+     * Name of the menu "Quit"; you can rename it something like "Exit"
+     */
     private String quitMenuName = DEFAULT_QUIT_MENU_NAME;
     private IndexNumberFormatter indexNumberFormatter = DefaultIndexNumberFormatter.INSTANCE;
 
@@ -26,10 +32,9 @@ public class MenuView extends AbstractView {
         super(runningTitle, nameInParentMenu);
     }
 
-    public MenuView(String runningTitle, String nameInParentMenu, String selectionMessage, String inputErrorMessage, String backMenuName, String quitMenuName, IndexNumberFormatter indexNumberFormatter) {
-        super(runningTitle, nameInParentMenu);
+    public MenuView(String runningTitle, String nameInParentMenu, String inputErrorMessage, String selectionMessage, String backMenuName, String quitMenuName, IndexNumberFormatter indexNumberFormatter) {
+        super(runningTitle, nameInParentMenu, inputErrorMessage);
         this.selectionMessage = selectionMessage;
-        this.inputErrorMessage = inputErrorMessage;
         this.backMenuName = backMenuName;
         this.quitMenuName = quitMenuName;
         this.indexNumberFormatter = indexNumberFormatter;
@@ -66,7 +71,6 @@ public class MenuView extends AbstractView {
 
         try {
             selection = keyboard.nextInt();
-
         } catch (InputMismatchException e) {
             selection = -1;
         } finally {
