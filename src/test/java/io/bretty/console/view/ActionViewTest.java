@@ -2,10 +2,6 @@ package io.bretty.console.view;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.InputMismatchException;
-import java.util.Scanner;
-
-import static org.junit.Assert.*;
 
 public class ActionViewTest {
 

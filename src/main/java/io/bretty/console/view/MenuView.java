@@ -9,24 +9,20 @@ public class MenuView extends AbstractView {
     public static final String DEFAULT_SELECTION_MESSAGE = "Please enter a number to continue: ";
     public static final String DEFAULT_BACK_MENU_NAME = "Back";
     public static final String DEFAULT_QUIT_MENU_NAME = "Quit";
-
+    /**
+     * a list of {@code AbstractView} objects to be displayed in the menu as available options
+     */
+    protected List<AbstractView> menuItems = new ArrayList<>();
     private String selectionMessage = DEFAULT_SELECTION_MESSAGE;
-
     /**
      * Name of the menu "Back"; you can rename it something like "GO BACK"
      */
     private String backMenuName = DEFAULT_BACK_MENU_NAME;
-
     /**
      * Name of the menu "Quit"; you can rename it something like "Exit"
      */
     private String quitMenuName = DEFAULT_QUIT_MENU_NAME;
     private IndexNumberFormatter indexNumberFormatter = DefaultIndexNumberFormatter.INSTANCE;
-
-    /**
-     * a list of {@code AbstractView} objects to be displayed in the menu as available options
-     */
-    protected List<AbstractView> menuItems = new ArrayList<>();
 
     public MenuView(String runningTitle, String nameInParentMenu) {
         super(runningTitle, nameInParentMenu);
@@ -42,6 +38,7 @@ public class MenuView extends AbstractView {
 
     /**
      * Add an entry to the menu; similar to remove, setter and getter
+     *
      * @param menuItem to be appended to the last
      */
     public void addMenuItem(AbstractView menuItem) {

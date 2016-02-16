@@ -13,7 +13,6 @@ public final class DefaultIndexNumberFormatter implements IndexNumberFormatter {
     }
 
     /**
-     *
      * @param index the index number of a menu item in a menu (starting from 0)
      * @return e.g. for index 0 (i.e the first one in menu items), the output is {@code "1) "}
      */

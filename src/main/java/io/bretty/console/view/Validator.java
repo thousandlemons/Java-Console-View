@@ -1,6 +1,6 @@
 package io.bretty.console.view;
 
-public interface Validator <T>{
+public interface Validator<T> {
 
     boolean isValid(T t);
 
