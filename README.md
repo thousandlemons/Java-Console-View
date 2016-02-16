@@ -166,7 +166,7 @@ public class BookTaxiView extends ActionView{
 		// the return type you expect from the read() method, String.class in this case
 		String name = this.read("Please enter your name: ", String.class);
 	
-		// create a validator judge if a string is a valid phone number
+		// create a validator to judge if a string is a valid phone number
 		Validator<String> phoneNumberValidator = new Validator<String>(){
 			@Override
 			public boolean isValid(String t){
