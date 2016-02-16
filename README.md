@@ -153,7 +153,7 @@ public class BookTaxiView extends ActionView{
 	// controller
 	private BookTaxiController controller;
 
-	public BookTaxiAction(BookTaxiController controller){
+	public BookTaxiView(BookTaxiController controller){
 		super("Booking a Taxi", "Book a taxi");
 		this.controller = controller;
 	}
