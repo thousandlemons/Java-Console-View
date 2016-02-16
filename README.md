@@ -1,4 +1,4 @@
-#### *Download the package [`ConsoleView-1.0.jar`](https://github.com/nathanielove/Java-Console-View/blob/master/ConsoleView-1.0.jar?raw=true) to use this library.* 
+#### *Download the package [`ConsoleView-2.0.jar`](https://github.com/nathanielove/Java-Console-View/blob/master/ConsoleView-2.0.jar?raw=true) to use this library.* 
 
 ## Overview
 
@@ -80,7 +80,7 @@ In this user guide, we will build a simple command line app "Taxi Booking", whic
 ```java
 class BookTaxiAction extends ActionView{
 
-	public ActionView(){
+	public BookTaxiAction(){
 		super("Booking a Taxi", "Book a taxi");
 	}
 	
@@ -116,12 +116,71 @@ Similarly, the first string in the constructor is the first line to display when
 	rootMenu.display();
 ```
 
-## Customization
+### Use More Powerful Features When Building Your App Logic
+
+To take a quick look, the `AbstractMenu` class provides following instance methods:
+
+```java
+// a wrapper to System.out.print(Object o)
+protected void print(Object o);
+
+// a wrapper to System.out.println()
+protected void println();
+
+// a wrapper to System.out.println(Object o)
+protected void println(Object o);
+
+protected <T> T read(String message, Class<T> expectedClass)
+
+protected <T> T read(String message, Class<T> expectedClass, Validator<T> validator)
+```
+
+The following example demonstrates a way to use these methods to build a custom `ActionMenu` class.
+
+```java
+public class BookTaxiAction extends ActionView{
+	public BookTaxiAction(){
+		super("Booking a Taxi", "Book a taxi");
+	}
+	
+	@Override
+	public void executeCustomAction() {
+	
+		String name = this.read("Please enter your name: ", String.class);
+	
+		Validator<String> phoneNumberValidator = new Validator<String>(){
+			@Override
+			public boolean isValid(String s){
+				// your rule to determine if a string is a valid phone number
+			}
+		};
+		
+		String phone = this.read("Please enter your phone number: ", String.class, phoneNumberValidator);
+		
+		double bid = this.read("Please enter your bid: ", Double.class);
+		
+		// continue your logic here
+		
+		this.println("Successfully book the following taxi...");
+	}
+}
+```
+
+A few points to notice:
+
+1. The `read()` method provides validation. When the user inputs an invalid value, because the input either doesn't sastify the expected class, or is rejected by the custom `Validator`, the error message (`this.errorMessage`) will be displayed, and the user will be asked to input the value again and again until a valid input is made.
+
+1. The output methods like `println` or `print` are just a wrapper of the system defaul print methods like `System.out.println()`.
+
+## Further Customization
 
 There are multiple ways to customize this framework.
 
-First, you can choose to pass in custom attributes (e.g. `selectionMessage`) in the constructor to replace the system defaults (which is "Please enter a number to continue: " in this case).
+1. You can choose to pass in custom attributes (e.g. `selectionMessage`) in the constructor to replace the system defaults (which is "Please enter a number to continue: " in this case).
 
-Second, you can implement your own `IndexNumberFormatter` and pass it into the constructor. The default implementation `DefaultIndexNumberFormatter` will render index 0 as `1) `, index 1 as `2) `, so on and so forth. The rendered strings will be printed before the menu item descriptions in the option list.
+1. You can implement your own `IndexNumberFormatter` and pass it into the constructor. The default implementation `DefaultIndexNumberFormatter` will render index 0 as `1) `, index 1 as `2) `, so on and so forth. The rendered strings will be printed before the menu item descriptions in the option list.
 
-Finally, you may wish to extend any existing class and override the template methods.
+1. You may implement your own `Validator<T>` to valid user input.
+
+1. You may wish to extend any existing class and override the template methods.
+
