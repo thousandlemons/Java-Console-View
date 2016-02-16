@@ -11,7 +11,7 @@ The parent class of all classes in the View layer is an abstract class - `Consol
 There are two default subclasses:
 
 * **`MenuView`**: ask the user to select from a list of available options 
-* **`ActionView`**: executes some custome logic wtih command line I/O
+* **`ActionView`**: executes some custome logic wtih command line UI
 
 ### Menu View
 
@@ -33,7 +33,6 @@ Welcome to the taxi booking service center.		// this.runningTitle
 3) Booking history								// item in this.menuItems
 4) Quit											// this.backMenuName or this.quitMenuName
 Please enter a number to continue: 				// this.selectionMessage
-
 ```
 
 If invalid input occurs, there will be an error message.
