@@ -2,8 +2,34 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>http://www.opensource.org/licenses/mit-license.php</url>
+        </license>
+    </licenses>
 
+    <developers>
+        <developer>
+            <name>Nathaniel Sun</name>
+            <email>nathaniel@bretty.io</email>
+            <organization>Bretty.io</organization>
+            <organizationUrl>http://bretty.io</organizationUrl>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:git@github.com:nathanielove/Java-Console-View.git</connection>
+        <developerConnection>scm:git:git@github.com:nathanielove/Java-Console-View.git</developerConnection>
+        <url>git@github.com:nathanielove/Java-Console-View.git</url>
+    </scm>
+
+    <description>
+        A Java framework to instantly build the View layer of your command line app. No more worries about anything like printing menus or validating user inputs. Just focus on your app logic.
+    </description>
+
+    <modelVersion>4.0.0</modelVersion>
+    <name>${project.groupId}:${project.artifactId}</name>
     <groupId>io.bretty</groupId>
     <artifactId>console-view</artifactId>
     <version>2.0</version>
