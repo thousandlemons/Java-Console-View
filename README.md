@@ -150,7 +150,7 @@ The following example demonstrates a way to use these methods to build a custom 
 ```java
 public class BookTaxiView extends ActionView{
 
-	// controller
+	// the controller of your view
 	private BookTaxiController controller;
 
 	public BookTaxiView(BookTaxiController controller){
@@ -158,11 +158,15 @@ public class BookTaxiView extends ActionView{
 		this.controller = controller;
 	}
 	
+	// define your custom logic
 	@Override
 	public void executeCustomAction() {
 	
+		// pass in the string you want to display to ask for user input, and
+		// the return type you expect from the read() method, String.class in this case
 		String name = this.read("Please enter your name: ", String.class);
 	
+		// create a validator judge if a string is a valid phone number
 		Validator<String> phoneNumberValidator = new Validator<String>(){
 			@Override
 			public boolean isValid(String t){
@@ -170,14 +174,24 @@ public class BookTaxiView extends ActionView{
 				// ...	
 			}
 		};
+		
+		// if the read() method got a string from user, but this string is rejected
+		// by your validator, the framework will ask the user to input again, until
+		// there is a valid input from the user
 		String phone = this.read("Please enter your phone number: ", String.class, phoneNumberValidator);
 		
+		// you may get a validator from controller, which contains real-time system
+		// state that is used in the validation process
 		Validator<Double> bidValidator = this.controller.getCurrentBidValidator();		
+		
+		// similarly, if you want the read() method to return a double, pass in
+		// Double.class as method parameter
 		double bid = this.read("Please enter your bid: ", Double.class, bidValidator);
 		
-		// call your controller
+		// call your controller to execute on the data you get from the user
 		boolean success = this.controller.book(name, phone, bid);
 		
+		// give feedback to the user
 		if(success){
 			this.println("Successfully book the following taxi...");
 		}
@@ -188,9 +202,21 @@ public class BookTaxiView extends ActionView{
 }
 ```
 
+An example console history when running this view may look like:
+
+```text
+Please enter your name: Nathaniel
+Please enter your phone number: lol
+Invalid input. Please try again: fdd
+Invalid input. Please try again: +12025550150
+Please enter your bid: lol
+Invalid input. Please try again: 15
+Sorry. We cannot make your booking. Please try again.
+```
+
 A few points to notice:
 
-1. The `read()` method uses the system scanneer and provides validation. When the user inputs an invalid value, because the input either doesn't sastify the expected class, or is rejected by the custom `Validator`, the error message (`this.errorMessage`) will be displayed, and the user will be asked to input the value again and again until a valid input is made.
+1. The `read()` method uses the system scanner and provides validation. When the user inputs an invalid value, because the input either doesn't sastify the expected class, or is rejected by the custom `Validator`, the error message (`this.errorMessage`) will be displayed, and the user will be asked to input the value again and again until a valid input is made.
 
 1. The output methods `println` or `print` are just wrappers of the system defaul print methods like `System.out.println()`.
 
