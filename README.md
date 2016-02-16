@@ -1,4 +1,4 @@
-#### *Download the package [`ConsoleView-2.0.jar`](https://github.com/nathanielove/Java-Console-View/blob/master/ConsoleView-2.0.jar?raw=true) to use this library.* 
+#### *Download the package [`console-view-2.0.jar`](https://github.com/nathanielove/Java-Console-View/blob/master/console-view-2.0.jar?raw=true) to use this library.*
 
 ## Overview
 
