@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.bretty</groupId>
-    <artifactId>ConsoleMenu</artifactId>
+    <artifactId>ConsoleView</artifactId>
     <version>1.0</version>
     <build>
         <plugins>
