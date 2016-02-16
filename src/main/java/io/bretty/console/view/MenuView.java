@@ -1,11 +1,10 @@
-package menu;
+package io.bretty.console.view;
 
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.List;
-import java.util.Scanner;
 
-public final class CompositeMenuItem extends MenuItem {
+public class MenuView extends AbstractView {
 
     public static final String DEFAULT_SELECTION_MESSAGE = "Please enter a number to continue: ";
     public static final String DEFAULT_ERROR_MESSAGE = "Invalid input. Please try again: ";
@@ -18,14 +17,17 @@ public final class CompositeMenuItem extends MenuItem {
     private String quitMenuName = DEFAULT_QUIT_MENU_NAME;
     private IndexNumberFormatter indexNumberFormatter = DefaultIndexNumberFormatter.INSTANCE;
 
-    private List<MenuItem> menuItems = new ArrayList<>();
+    /**
+     * a list of {@code AbstractView} objects to be displayed in the menu as available options
+     */
+    protected List<AbstractView> menuItems = new ArrayList<>();
 
-    public CompositeMenuItem(String runningTitle, String nameInMenu) {
-        super(runningTitle, nameInMenu);
+    public MenuView(String runningTitle, String nameInParentMenu) {
+        super(runningTitle, nameInParentMenu);
     }
 
-    public CompositeMenuItem(String runningTitle, String nameInMenu, String selectionMessage, String inputErrorMessage, String backMenuName, String quitMenuName, IndexNumberFormatter indexNumberFormatter) {
-        super(runningTitle, nameInMenu);
+    public MenuView(String runningTitle, String nameInParentMenu, String selectionMessage, String inputErrorMessage, String backMenuName, String quitMenuName, IndexNumberFormatter indexNumberFormatter) {
+        super(runningTitle, nameInParentMenu);
         this.selectionMessage = selectionMessage;
         this.inputErrorMessage = inputErrorMessage;
         this.backMenuName = backMenuName;
@@ -33,35 +35,41 @@ public final class CompositeMenuItem extends MenuItem {
         this.indexNumberFormatter = indexNumberFormatter;
     }
 
-    public void addMenuItem(MenuItem menu){
-        menu.backMenu = this;
-        this.menuItems.add(menu);
+    /**
+     * Add an entry to the menu; similar to remove, setter and getter
+     * @param menuItem to be appended to the last
+     */
+    public void addMenuItem(AbstractView menuItem) {
+        menuItem.parentView = this;
+        this.menuItems.add(menuItem);
     }
 
-    public void removeMenuItem(int index){
+    public void removeMenuItem(int index) {
         this.menuItems.remove(index);
     }
 
-    public List<MenuItem> getMenuItems(){
+    public List<AbstractView> getMenuItems() {
         return new ArrayList<>(this.menuItems);
     }
 
-    private boolean isValidIndex(int index){
+    public void setMenuItems(List<AbstractView> menuItems) {
+        this.menuItems = new ArrayList<>(menuItems);
+    }
+
+    private boolean isValidIndex(int index) {
         return index >= 1 && index <= this.menuItems.size() + 1;
     }
 
-    private int readSelection(){
+    private int readSelection() {
 
         int selection;
 
-        try{
+        try {
             selection = keyboard.nextInt();
 
-        }
-        catch (InputMismatchException e){
+        } catch (InputMismatchException e) {
             selection = -1;
-        }
-        finally {
+        } finally {
             keyboard.nextLine();
         }
 
@@ -82,31 +90,29 @@ public final class CompositeMenuItem extends MenuItem {
         // 2) View Item
         // 3) ...
 
-        for(int i = 0; i < this.menuItems.size(); ++i){
-            System.out.println(this.indexNumberFormatter.format(i + 1) + this.menuItems.get(i).nameInMenu);
+        for (int i = 0; i < this.menuItems.size(); ++i) {
+            System.out.println(this.indexNumberFormatter.format(i) + this.menuItems.get(i).nameInParentMenu);
         }
 
-        String backOrQuit = this.backMenu == null? this.quitMenuName : this.backMenuName;
+        String backOrQuit = this.parentView == null ? this.quitMenuName : this.backMenuName;
 
-        // 4) Back/quit
-        System.out.println(this.indexNumberFormatter.format(this.menuItems.size() + 1) + backOrQuit);
+        // 4) Back/quit; always the last index
+        System.out.println(this.indexNumberFormatter.format(this.menuItems.size()) + backOrQuit);
 
         // prompt for selection
         System.out.print(this.selectionMessage);
 
         // get a valid integer
         int selection = this.readSelection();
-        while(!isValidIndex(selection)){
+        while (!isValidIndex(selection)) {
             System.out.print(this.inputErrorMessage);
             selection = this.readSelection();
         }
 
-        // go backMenu
-        if(selection == this.menuItems.size() + 1){
+        // go parentView
+        if (selection == this.menuItems.size() + 1) {
             this.goBack();
-        }
-
-        else{
+        } else {
             this.menuItems.get(selection - 1).display();
         }
     }

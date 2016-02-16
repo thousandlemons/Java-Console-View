@@ -1,10 +1,10 @@
-package menu;
+package io.bretty.console.view;
 
 import java.util.Scanner;
 
-public class SimpleActionMenuItem extends ActionMenuItem {
+public class SimpleActionViewTest extends ActionView {
 
-    public SimpleActionMenuItem() {
+    public SimpleActionViewTest() {
         super("Running Simple Action", "Simple Action");
     }
 
