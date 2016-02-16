@@ -6,7 +6,7 @@
 
 This framework provides a way to quickly construct the View layer of a Java command line app.
 
-The parent class of all classes in the View layer is an abstract class - `ConsoleView`. This class has only one abstract public method, `.display()`, to start the console UI defined in this view.
+The parent class of all classes in the View layer is an abstract class - `AbstractView`. This class has only one abstract public method, `.display()`, to start the console UI defined in this view.
 
 There are two default subclasses:
 
