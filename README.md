@@ -73,7 +73,7 @@ After the user presses enter, it will go back and display again the parent menu 
 
 ## User Guide
 
-In this user guide, we will build a simple command line app to "Taxi Booking", which prints the same result as the examples above.
+In this user guide, we will build a simple command line app "Taxi Booking", which prints the same result as the examples above.
 
 ### Create "Book Taxi" Action
 
