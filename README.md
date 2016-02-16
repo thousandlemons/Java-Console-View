@@ -63,7 +63,6 @@ Booking a Taxi									// this.runningTitle
 // ... custom logic here
 
 Press enter to continue...						// this.pauseMessage
-
 ```
 
 The custom logic is the part where you need to write the code specific to your app.
@@ -98,49 +97,65 @@ Notice that the first string in the constructor will be printed in the console b
 ```java
 	MenuView historyMenu = new MenuView("Booking History", "Booking history");
 	
+	// populate menu items
 	historyMenu.addMenuItem(new ViewHistoryAction());
 	historyMenu.addMenuItem(new RemoveHistoryAction());
 ```
 
 Similarly, the first string in the constructor is the first line to display when this menu is printed. The second is the option name in the parent menu, if there is any parent menu of this "History" menu.
 
-### Create Root Menu
+### Create Root Menu and Run the App
 
 ```java
 	MenuView rootMenu = new MenuView("Welcome...", "");
 	
+	// populate menu items
 	rootMenu.addMenuItem(new BookTaxiAction());
 	rootMenu.addMenuItem(new CheckBookingStatusAction());
 	rootMenu.addMenuItem(historyMenu);
 	
+	// run the app
 	rootMenu.display();
 ```
 
-### Use More Powerful Features When Building Your App Logic
+### Use More Powerful UI Wrappers
 
 To take a quick look, the `AbstractMenu` class provides following instance methods:
 
 ```java
-// a wrapper to System.out.print(Object o)
-protected void print(Object o);
+	// a wrapper to System.out.print(Object o)
+	protected void print(Object o){...}
 
-// a wrapper to System.out.println()
-protected void println();
+	// a wrapper to System.out.println()
+	protected void println(){...}
 
-// a wrapper to System.out.println(Object o)
-protected void println(Object o);
+	// a wrapper to System.out.println(Object o)
+	protected void println(Object o){...}
 
-protected <T> T read(String message, Class<T> expectedClass)
+	// read user input
+	protected <T> T read(String message, Class<T> expectedClass){...}
 
-protected <T> T read(String message, Class<T> expectedClass, Validator<T> validator)
+	// read user input with custom validator
+	protected <T> T read(String message, Class<T> expectedClass, Validator<T> validator){...}
 ```
 
-The following example demonstrates a way to use these methods to build a custom `ActionMenu` class.
+The `ActionMenu` class also provides a useful instance method, which display the pause message `this.pauseMessage` and asks the users to press enter to continue.
 
 ```java
-public class BookTaxiAction extends ActionView{
-	public BookTaxiAction(){
+	protected void pause(){...}
+```
+
+The following example demonstrates a way to use these methods to build a custom `ActionMenu` class, assuming you have a controller class `BookTaxiController`
+
+```java
+public class BookTaxiView extends ActionView{
+
+	// controller
+	private BookTaxiController controller;
+
+	public BookTaxiAction(BookTaxiController controller){
 		super("Booking a Taxi", "Book a taxi");
+		this.controller = controller;
 	}
 	
 	@Override
@@ -150,35 +165,42 @@ public class BookTaxiAction extends ActionView{
 	
 		Validator<String> phoneNumberValidator = new Validator<String>(){
 			@Override
-			public boolean isValid(String s){
-				// your rule to determine if a string is a valid phone number
+			public boolean isValid(String t){
+				// define your rule to validate phone numbers
+				// ...	
 			}
 		};
-		
 		String phone = this.read("Please enter your phone number: ", String.class, phoneNumberValidator);
 		
-		double bid = this.read("Please enter your bid: ", Double.class);
+		Validator<Double> bidValidator = this.controller.getCurrentBidValidator();		
+		double bid = this.read("Please enter your bid: ", Double.class, bidValidator);
 		
-		// continue your logic here
+		// call your controller
+		boolean success = this.controller.book(name, phone, bid);
 		
-		this.println("Successfully book the following taxi...");
+		if(success){
+			this.println("Successfully book the following taxi...");
+		}
+		else{
+			this.println("Sorry. We cannot make your booking. Please try again.")
+		}
 	}
 }
 ```
 
 A few points to notice:
 
-1. The `read()` method provides validation. When the user inputs an invalid value, because the input either doesn't sastify the expected class, or is rejected by the custom `Validator`, the error message (`this.errorMessage`) will be displayed, and the user will be asked to input the value again and again until a valid input is made.
+1. The `read()` method uses the system scanneer and provides validation. When the user inputs an invalid value, because the input either doesn't sastify the expected class, or is rejected by the custom `Validator`, the error message (`this.errorMessage`) will be displayed, and the user will be asked to input the value again and again until a valid input is made.
 
-1. The output methods like `println` or `print` are just a wrapper of the system defaul print methods like `System.out.println()`.
+1. The output methods `println` or `print` are just wrappers of the system defaul print methods like `System.out.println()`.
 
 ## Further Customization
 
 There are multiple ways to customize this framework.
 
-1. You can choose to pass in custom attributes (e.g. `selectionMessage`) in the constructor to replace the system defaults (which is "Please enter a number to continue: " in this case).
+1. You may choose to pass in any custom attribute in the constructor (e.g. `selectionMessage`) to replace the system defaults (which is "Please enter a number to continue: " in this case).
 
-1. You can implement your own `IndexNumberFormatter` and pass it into the constructor. The default implementation `DefaultIndexNumberFormatter` will render index 0 as `1) `, index 1 as `2) `, so on and so forth. The rendered strings will be printed before the menu item descriptions in the option list.
+1. You may implement your own `IndexNumberFormatter` and pass it into the constructor. The default implementation `DefaultIndexNumberFormatter` will render index 0 as `1) `, index 1 as `2) `, so on and so forth. The rendered strings will be printed before the menu item descriptions in the option list.
 
 1. You may implement your own `Validator<T>` to valid user input.
 
