@@ -59,7 +59,6 @@ An `ActionView` is what happens after the user selects a specific option, for ex
 
 ```text
 Booking a Taxi									// this.runningTitle
-
 // ... custom logic here
 
 Press enter to continue...						// this.pauseMessage
@@ -212,6 +211,8 @@ Invalid input. Please try again: +12025550150
 Please enter your bid: lol
 Invalid input. Please try again: 15
 Sorry. We cannot make your booking. Please try again.
+
+Press enter to continue...
 ```
 
 A few points to notice:
