@@ -142,7 +142,7 @@ First, create two classes called `ViewHistoryAction` and `RemoveHistoryAction` i
 
 Similarly, the first string in the constructor is the the title when this the `historyMenu` runs. The second string is the descriptive name of `historyMenu` in a parent menu, if there is any.
 
-### <a name="root-menu"></a> Create Root Menu and Run the App
+### <a name="root-menu"></a> Create Root Menu
 
 ```java
 	MenuView rootMenu = new MenuView("Welcome...", "");
