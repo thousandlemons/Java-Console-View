@@ -1,5 +1,9 @@
 package io.bretty.console.view;
 
+/**
+ * A singleton class to format index number in user menu, e.g. for index 0 (i.e the first one in menu items), the output is {@code "1) "}
+ */
+
 public final class DefaultIndexNumberFormatter implements IndexNumberFormatter {
 
 

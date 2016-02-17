@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.List;
 
+/**
+ * The View that displays a list of options with index numbers, and asks the user to select one to proceed. It provides validation of user input.
+ */
+
 public class MenuView extends AbstractView {
 
     public static final String DEFAULT_SELECTION_MESSAGE = "Please enter a number to continue: ";

@@ -5,6 +5,10 @@ import java.math.BigInteger;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
+/**
+ * The parent class of all View classes, which defines infrastructure attributes (e.g. {@code parentView} and methods (e.g. {@code read()}
+ */
+
 
 public abstract class AbstractView {
 
@@ -105,10 +109,16 @@ public abstract class AbstractView {
     }
 
     /**
-     * Read an object from command line user input
+     * Read an object from command line user input with default type validation.
+     * It will repeatedly ask the user for re-try if validation continues to fail.
      *
      * @param message       The message to print asking for user's input
-     * @param expectedClass The expected class of user input
+     * @param expectedClass The class of the expected data scanned (e.g. {@code Integer.class}).
+     *                      Currently all expected classes as in the {@code .nextInt()},
+     *                      {@code .nextDouble()} etc. are supported. Aka when you create a
+     *                      {@code Scanner keyboard = new Scanner(System.in);}, all the {@code next...()}
+     *                      methods you will invoke on the {@code keyboard} object can be
+     *                      replaced by this method
      * @param <T>           Expected class
      * @return the scanned input of the expected type
      */
@@ -118,7 +128,8 @@ public abstract class AbstractView {
 
 
     /**
-     * Read an object from command line user input
+     * Read an object from command line user input with custom validator
+     * It will repeatedly ask the user for re-try if validation continues to fail.
      *
      * @param message       The message to print asking for user's input
      * @param expectedClass The class of the expected data scanned (e.g. {@code Integer.class}).

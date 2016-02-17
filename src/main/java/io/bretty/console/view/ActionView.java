@@ -1,6 +1,9 @@
 package io.bretty.console.view;
 
 /**
+ * The view that is used for a custom leaf functionality implementation.
+ * It provides useful features like managed UI wrapper, e.g. {@code read()}
+ * to read an input from the user with automatic validation.
  * Workflow of the default implementation:
  * 1) print title;
  * 2) execute custom action;
