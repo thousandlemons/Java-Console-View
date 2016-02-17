@@ -34,7 +34,7 @@ Download the package [`console-view-3.0.jar`](https://github.com/nathanielove/Ja
 * [Advanced Features](#advanced-features)
 	* [Dynamically Create `MenuView` in Running `ActionView`](#menu-in-action)
 	* [Customization - Building Your Own `ViewConfig`](#customization)
-	* [Overriding `onBack()` and `onQuit()` in Your MenuView Subclass](menu-subclass)
+	* [Overriding `onBack()` and `onQuit()` in Your MenuView Subclass](#menu-subclass)
 
 ## <a name="overview"></a> Overview
 
@@ -42,7 +42,7 @@ Download the package [`console-view-3.0.jar`](https://github.com/nathanielove/Ja
 
 This framework provides a way to quickly construct the View layer of a Java command line app.
 
-**`AbstractView`** is the ultimate parent class of all classes in the View layer. This class has only one abstract public method, `.display()`, which starts this view. It also provides a handful of [UI components]() to gracefully handle user interaction, user input and validation, etc.
+**`AbstractView`** is the ultimate parent class of all classes in the View layer. This class has only one abstract public method, `.display()`, which starts this view. It also provides a handful of [UI components](#ui-components) to gracefully handle user interaction, user input and validation, etc.
 
 There are two subclasses of `AbstractView`:
 
