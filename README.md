@@ -34,7 +34,7 @@ Download the package [`console-view-3.0.jar`](https://github.com/nathanielove/Ja
 * [Advanced Features](#advanced-features)
 	* [Dynamically Create `MenuView` in Running `ActionView`](#menu-in-action)
 	* [Customization - Building Your Own `ViewConfig`](#customization)
-	* [Overriding onBack() and onQuit() in Your MenuView Subclass](menu-subclass)
+	* [Overriding `onBack()` and `onQuit()` in Your MenuView Subclass](menu-subclass)
 
 ## <a name="overview"></a> Overview
 
