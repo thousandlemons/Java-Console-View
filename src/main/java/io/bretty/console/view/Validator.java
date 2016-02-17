@@ -1,7 +1,7 @@
 package io.bretty.console.view;
 
 /**
- * The interface that judges if a certain user input is valid. See the generic user input wrapper method {@link io.bretty.console.view.AbstractView#read(String, Class, Validator) read()}
+ * The interface that judges if a certain user input is valid. See the generic user input wrapper method {@link io.bretty.console.view.AbstractView#prompt(String, Class, Validator) prompt()}
  * @param <T> The class of expected user input
  */
 

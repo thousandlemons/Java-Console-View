@@ -1,49 +1,85 @@
-#### *Download the package [`console-view-2.0.jar`](https://github.com/nathanielove/Java-Console-View/blob/master/console-view-2.0.jar?raw=true) to use this library.*
+## Installation
 
-## Overview
+### Maven Repo
 
-### Introduction
+```xml
+<dependency>
+  <groupId>io.bretty</groupId>
+  <artifactId>console-view</artifactId>
+  <version>3.0</version>
+</dependency>
+```
+
+### JAR Release
+
+Download the package [`console-view-3.0.jar`](https://github.com/nathanielove/Java-Console-View/blob/master/console-view-3.0.jar?raw=true) and add it to your project resources.
+
+## Content
+
+* [Overview](#overview)
+	* [Introduction](#introduction)
+	* [Menu View](#menu-view)
+	* [Action View](#action-view)
+* [Quick Start](#quick-start)
+	* [Create "Book Taxi" Action](#book-taxi-action)
+	* [Create "Booking History" Menu](#history-menu)
+	* [Create Root Menu](#root-menu)
+	* [Run the App](#run-app)
+* [UI Components](#ui-components)
+	* [Print](#print)
+	* [Prompt](#prompt)
+	* [Quick Feedback](#quick-feedback)
+	* [Confirmation Dialog](#confirmation-dialog)
+	* [Pause](#pause)
+* [Advanced Features](#advanced-features)
+	* [Dynamically Create `MenuView` in Running `ActionView`](#menu-in-action)
+	* [Customization - Building Your Own `ViewConfig`](#customization)
+	* [Overriding onBack() and onQuit() in Your MenuView Subclass](menu-subclass)
+
+## <a name="overview"></a> Overview
+
+### <a name="introduction"></a> Introduction
 
 This framework provides a way to quickly construct the View layer of a Java command line app.
 
-The parent class of all classes in the View layer is an abstract class - `AbstractView`. This class has only one abstract public method, `.display()`, to start the console UI defined in this view.
+**`AbstractView`** is the ultimate parent class of all classes in the View layer. This class has only one abstract public method, `.display()`, which starts this view. It also provides a handful of [UI components]() to gracefully handle user interaction, user input and validation, etc.
 
-There are two default subclasses:
+There are two subclasses of `AbstractView`:
 
-* **`MenuView`**: ask the user to select from a list of available options 
-* **`ActionView`**: executes some custome logic wtih command line UI
+* **`MenuView`**: the view that asks the user to select from a list of available options 
+* **`ActionView`**: the view that executes a single custome app logic
 
-### Menu View
+### <a name="menu-view"></a> Menu View
 
 The workflow of the `.display()` method in `MenuView`:
 
 1. Print `this.runningTitle`
-1. For each `AbstractMenu` object in `this.menuItems`
-	* Print index prefix
-	* Print description
-1. Print `this.selectionMessage`
-1. Scan for integer user input
+1. For each `AbstractMenu menuItem` in `this.menuItems`
+	* Print index prefix (using `this.viewConfig.indexNumberFormatter`)
+	* Print `menuItem.nameInParentMenu`
+1. Print `this.viewConfig.selectionMessage`
+1. Scan for an integer input from user
 
-The console output of it will be something like:
+The console output of the root view of a sample taxi booking app is:
 
 ```text
 Welcome to the taxi booking service center.		// this.runningTitle
 1) Book a taxi									// item in this.menuItems
 2) Check booking status							// item in this.menuItems
 3) Booking history								// item in this.menuItems
-4) Quit											// this.backMenuName or this.quitMenuName
-Please enter a number to continue: 				// this.selectionMessage
+4) Quit											// this.viewConfig.backMenuName or this.viewConfig.quitMenuName
+Please enter a number to continue: 				// this.viewConfig.selectionMessage
 ```
 
 If invalid input occurs, there will be an error message.
 
 ```text
-Invalid input. Please try again: 				// this.errorMessage
+Invalid input. Please try again: 				// this.viewConfig.inputErrorMessage
 ```
 
-Once the user enters a valid number, the system will run the corresponding option.
+Once the user enters a valid selection number, the system will call the `.display()` method on the corresponding `menuItem`.
 
-If the current `MenuView` is not the root, the last option will always be `Back` instead of `Quit`. For example, the "booking history" menu will look like this.
+If the current `MenuView` is not the root, the last option will always be `Back` instead of `Quit`. For example, the "Booking History" menu, which is a submenu of the root menu, looks like this.
 
 ```text
 Booking History
@@ -53,27 +89,28 @@ Booking History
 ```
 By entering the number for "Back", the user will go back to the parent menu, which is "Welcome..." in this case.
 
-### Action View
+### <a name="action-view"></a> Action View
 
-An `ActionView` is what happens after the user selects a specific option, for example, to book a taxi. The console out put of it will be something like:
+`ActionView` represents a single leaf functionality of your app, for example, to book a taxi. The console out put of it will be something like:
 
 ```text
 Booking a Taxi									// this.runningTitle
 // ... custom logic here
+// ...
 
-Press enter to continue...						// this.pauseMessage
+Press enter to continue...						// this.viewConfig.pauseMessage
 ```
 
 The custom logic is the part where you need to write the code specific to your app.
 
-After the user presses enter, it will go back and display again the parent menu view.
+The view will pause after finishing all custom logic by displaying `this.viewConfig.pauseMessage`, which is "Press enter to continue..." by default. After the user presses enter, it will go back and display again the parent menu view.
 
 
-## User Guide
+## <a name="quick-start"></a> Quick Start
 
-In this user guide, we will build a simple command line app "Taxi Booking", which prints the same result as the examples above.
+In this quick start, we will build a simple command line app "Taxi Booking", which prints the same result as the examples above.
 
-### Create "Book Taxi" Action
+### <a name="book-taxi-action"></a> Create "Book Taxi" Action
 
 ```java
 class BookTaxiAction extends ActionView{
@@ -89,146 +126,268 @@ class BookTaxiAction extends ActionView{
 }
 ```
 
-Notice that the first string in the constructor will be printed in the console before your custom logic runs. The second string will be displayed as the option name in the parent menu, if there is any.
+Notice that the first string passed to the `super()` constructor will be printed in the console as title when your custom logic runs (i.e. `this.runningTitle`). The second string will be displayed as a descriptive name of this view in a parent menu, if there is any (i.e. `this.nameInParentMenu`).
 
-### Create "History" Menu
+### <a name="history-menu"></a> Create "History" Menu
+
+First, create two classes called `ViewHistoryAction` and `RemoveHistoryAction` in the same fashion as we created `BookTaxiAction`. Now assuming we already created these two classes, we can build our `historyMenu` by registering the instances of these two classe as menu items.
 
 ```java
 	MenuView historyMenu = new MenuView("Booking History", "Booking history");
 	
-	// populate menu items
+	// register menu items
 	historyMenu.addMenuItem(new ViewHistoryAction());
 	historyMenu.addMenuItem(new RemoveHistoryAction());
 ```
 
-Similarly, the first string in the constructor is the first line to display when this menu is printed. The second is the option name in the parent menu, if there is any parent menu of this "History" menu.
+Similarly, the first string in the constructor is the the title when this the `historyMenu` runs. The second string is the descriptive name of `historyMenu` in a parent menu, if there is any.
 
-### Create Root Menu and Run the App
+### <a name="root-menu"></a> Create Root Menu and Run the App
 
 ```java
 	MenuView rootMenu = new MenuView("Welcome...", "");
 	
-	// populate menu items
+	// register menu items
 	rootMenu.addMenuItem(new BookTaxiAction());
 	rootMenu.addMenuItem(new CheckBookingStatusAction());
-	rootMenu.addMenuItem(historyMenu);
-	
-	// run the app
+	rootMenu.addMenuItem(historyMenu);	
+```
+
+### <a name="run-app"></a> Run the App
+
+```java
 	rootMenu.display();
 ```
 
-### Use More Powerful UI Wrappers
 
-To take a quick look, the `AbstractMenu` class provides following instance methods:
+## <a name="ui-components"></a> Use Powerful UI Components
 
-```java
-	// a wrapper to System.out.print(Object o)
-	protected void print(Object o){...}
+`AbstractView` provides a variety of UI components (accessible in subclasses as inherited methods) that facilitate your interaction with the user, such as asking for user confirmation, reading and validating a user input, etc. These are especially useful when you implement your custom app logic in a sublcass of `ActionView`.
 
-	// a wrapper to System.out.println()
-	protected void println(){...}
+Let's take a quick look at each of them.
 
-	// a wrapper to System.out.println(Object o)
-	protected void println(Object o){...}
+### <a name="print"></a> Print
 
-	// read user input
-	protected <T> T read(String message, Class<T> expectedClass){...}
-
-	// read user input with custom validator
-	protected <T> T read(String message, Class<T> expectedClass, Validator<T> validator){...}
-```
-
-The `ActionMenu` class also provides a useful instance method, which display the pause message `this.pauseMessage` and asks the users to press enter to continue.
+You can use one of the print wrappers to avoid `System.out.println()`. For example,
 
 ```java
-	protected void pause(){...}
-```
-
-The following example demonstrates a way to use these methods to build a custom `ActionMenu` class, assuming you have a controller class `BookTaxiController`
-
-```java
-public class BookTaxiView extends ActionView{
-
-	// the controller of your view
-	private BookTaxiController controller;
-
-	public BookTaxiView(BookTaxiController controller){
-		super("Booking a Taxi", "Book a taxi");
-		this.controller = controller;
-	}
+class BookTaxiAction extends ActionView{
+	...
 	
-	// define your custom logic
-	@Override
+	@override
 	public void executeCustomAction() {
-	
-		// pass in the string you want to display to ask for user input, and
-		// the return type you expect from the read() method, String.class in this case
-		String name = this.read("Please enter your name: ", String.class);
-	
-		// create a validator to judge if a string is a valid phone number
-		Validator<String> phoneNumberValidator = new Validator<String>(){
-			@Override
-			public boolean isValid(String t){
-				// define your rule to validate phone numbers
-				// ...	
-			}
-		};
-		
-		// if the read() method got a string from user, but this string is rejected
-		// by your validator, the framework will ask the user to input again, until
-		// there is a valid input from the user
-		String phone = this.read("Please enter your phone number: ", String.class, phoneNumberValidator);
-		
-		// similarly, if you want the read() method to return a double, pass in
-		// Double.class as method parameter; if the user input is not a double,
-		// the framework will keep asking for retry until there is a valid input
-		double bid = this.read("Please enter your bid: ", Double.class);
-		
-		// call your controller to execute on the data you get from the user
-		boolean success = this.controller.book(name, phone, bid);
-		
-		// give feedback to the user
-		if(success){
-			this.println("Successfully book the following taxi...");
-		}
-		else{
-			this.println("Sorry. We cannot make your booking. Please try again.")
-		}
+		this.print("Hello");
+		this.println(" World");
+		this.println(new Date());
 	}
 }
 ```
 
-An example console history when running this view may look like:
+The result will be:
 
 ```text
-Please enter your name: Nathaniel
-Please enter your phone number: lol
-Invalid input. Please try again: abc
-Invalid input. Please try again: +12025550150
-Please enter your bid: lol
-Invalid input. Please try again: 15
-Sorry. We cannot make your booking. Please try again.
-
-Press enter to continue...
+Hello World
+Wed Feb 17 19:00:32 UTC 2016
 ```
 
-After the user presses the enter in the end, it will go back to the `parentView`, if there is any.
+### <a name="prompt"></a> Prompt
 
-Here are a few points to notice:
+No more `new Scanner(System.in)` to read user input. Instead, use `prompt()` - a UI component that provides both user input and validation. If the user enters any invalid input, the frameworks will keep asking for retry, until a valid input is made. For example,
 
-1. The `read()` method uses the system scanner and provides validation. When the user inputs an invalid value, because the input either doesn't sastify the expected class, or is rejected by the custom `Validator`, the error message (`this.errorMessage`) will be displayed, and the user will be asked to input the value again and again until a valid input is made.
+```java
+	@override
+	public void executeCustomAction() {
+		int number = this.prompt("Please enter an integer: ", Integer.class);
+		this.println("Your integer is " + number);
+	}
+```
+A possible result might look like:
 
-1. The output methods `println` or `print` are just wrappers of the system defaul print methods like `System.out.println()`. But hopeful they can save you some time from typing long method names.
+```text
+Please enter an integer: lol
+Invalid input. Please try again: 0.9
+Invalid input. Please try again: true
+Invalid input. Please try again: 1234567890987654321123451234
+Invalid input. Please try again: 15
+Your integer is 15
+```
 
-## Further Customization
+Also, you may use your custom validator to validate user input. For example:
 
-There are multiple ways to customize this framework.
+```java
+	@override
+	public void executeCustomAction() {
+		Validator<Double> bidValidator = new Validator<Double>(){
+			@Override
+			public boolean isValid(Double input) {
+				// valid bid must be no less than zero
+				return Double.compare(input, 0) >= 0;
+			}
+		};
+		double bid = this.prompt("Please enter your bid: ", Double.class, bidValidator);
+		this.println("Your bid is " + bid);
+	}
+```
 
-1. You may choose to pass in any custom attribute in the constructor (e.g. `selectionMessage`) to replace the system defaults (which is "Please enter a number to continue: " in this case).
+Any user input will be first checked against the expected return type, then the custom validator, if the custom validator is presented. If the user input fails either of the two steps of validation, the system will keep asking for retry, until a valid input is made.
 
-1. You may implement your own `IndexNumberFormatter` and pass it into the constructor. The default implementation `DefaultIndexNumberFormatter` will render index 0 as `1) `, index 1 as `2) `, so on and so forth. The rendered strings will be printed before the menu item descriptions in the option list.
+A possible console output using the custom validator above is:
 
-1. You may implement your own `Validator<T>` to valid user input.
+```text
+Please enter your bid: lol
+Invalid input. Please try again: true
+Invalid input. Please try again: -100
+Invalid input. Please try again: 12.6
+Your bid is 12.6
+```
 
-1. You may wish to extend any existing class and override the template methods.
+*To replace the default input error message, see [Customization](#customization).*
+
+### <a name="quick-feedback"></a> Quick Feedback
+
+There are three build-in quick feedbacks:
+
+```java
+	@override
+	public void executeCustomAction() {
+		this.actionCanceled();
+		this.actionSuccessful();
+		this.actionFailed();
+	}
+```
+
+The console output will be:
+
+```text
+Action canceled.
+Action successful!
+Action failed.
+```
+
+*To replace the default feedback message, see [Customization](#customization).*
+
+
+### <a name="confirmation-dialog"></a> Confirmation Dialog
+
+Sometime you might want to ask for user's confirmation before performing some critical tasks. That's where we can help. Let's see an example:
+
+```java
+	@override
+	public void executeCustomAction() {
+		...
+		
+		boolean confirmed = this.confirmDialog("Make booking now?");
+		if(confirmed){
+			this.println("Your taxi is on the way!");
+		}
+	}
+```
+
+If the user chooses to confirm in the dialog, the console output will be like:
+
+```text
+Make booking now? (y/N) y
+Your taxi is on the way!
+```
+
+Please notice that both lower case `"y"` and upper case `"Y"` are accepted for confirmation. 
+
+If the user enters anything else, it will be taken as "cancel", and a canceled action feedback will be printed automatically. For example,
+
+```text
+Make booking now? (y/N) p
+Action canceled.
+```
+
+*To replace the default confirmation options* `(y/N)`, *see [Customization](#customization).*
+
+### <a name="pause"></a> Pause
+
+As mentioned above, after an custom action view finishes executing the `executeCustomAction()` method, and before going back to the parent view, the system will pause and ask for the user to press enter to continue. If we consider the "Confirmation Dialog" example above, the actual output is:
+
+```text
+Make booking now? (y/N) p
+Action canceled.
+
+Press enter to continue...
+
+```
+
+Actually, you can call the `pause()` method anywhere anytime. But notice that there will be a new line above the pause message.
+
+*To replace the default pause message, see [Customization](#customization).*
+
+## <a name="advanced-features"></a> Advanced Features
+
+### <a name="menu-in-action"></a> Dynamically Create `MenuView` in Running `ActionView`
+
+In the latest update, we added support for setting an `ActionView` object as the parent view of a `MenuView` object, so that you can freely create any `MenuView` object dynamically at runtime.
+
+The following code example demonstrates how it works.
+
+```java
+class ViewHistoryAction extends ActionView{
+	ViewHistoryAction(){
+		super("Booking History", "View history");
+	}
+	
+	@Override
+	public void executeCustomAction() {
+	    String line = this.prompt("Please enter a line: ", String.class);
+	    
+	    // create a MenuView object dynamically from user input
+	    MenuView menuView = new MenuView("Submenu " + line, "Submenu " + line);
+	    
+	    // if you want the users to be able to get back here from the menu,
+	    // set the parent view as "this"; or if you want to redirect the users 
+	    // to some other view, you may pass in that view object as parameter.
+	    // however, if you don't set any parent view, the parenetView will be null,
+	    // and user can only quit from this menu view
+	    menuView.setParentView(this);
+	    
+	    // run the view you just created
+	    menuView.display();
+	}
+}
+```
+
+### <a name="customization"></a> Customization - Building Your Own `ViewConfig`
+
+As you might have noticed in the examples above, all the default string in the UI (e.g. "Please enter a number to continue: ") are taken from a `ViewConfig` object. Hence, by creating your own `ViewConfig` object, you can get full control of the choice of words.
+
+To build a custom `ViewConfig` object, you'll have to use the `ViewConfig.Builder` class. For example,
+
+```java
+	 ViewConfig viewConfig = new ViewConfig.Builder()
+	 	.setActionCanceledMessage("Uh oh~ Action canceled")
+	 	.setActionSuccessfulMessage("Congrats! You did it!")
+	 	.setPauseMessage("Wait... If you wanna continue, you gotta press enter.")
+	 	.build();
+``` 
+
+Please notice that the `ViewConfig` is template-based. When you create a `ViewConfig.Builder` object, all the fields are initialized to the default values. When you change some of the fields using the setters, all others that you didn't change will continue to use the default value when you `.build()`.
+
+The `ViewConfig.Builder` allows you to replace any string in the default UI with your own choice of words. To use your custom `ViewConfig` object, simply pass it in the constructor when you are creating a view object. For example,
+
+```java
+	ActionView actionView = new ActionView("Sample Action", "Sample action", viewConfig){
+		@override
+		public executeCustomAction(){
+			// your custom app logic
+		}
+	};
+	
+	MenuView menuView = new MenuView("Sample menu view", "", viewConfig);
+```
+
+### <a name="menu-subclass"></a> Overriding `onBack()` and `onQuit()`
+
+Although the current implementation covers most of your possible use cases, in case that you have to do something like subclass the `MenuView` class, these two methods are really important. 
+
+If your menu view has a parent view, `onBack()` will be called by the system after the user selects "Back", just before the parent view is displayed.
+
+Similarly, if your menu view doesn't have a parent view, then `onQuit()` will be called by the system just before the user quits the program.
+
+Always remember to add `super.onBack()` or `super.onQuit()` as the last line of your overriding method.
+
 

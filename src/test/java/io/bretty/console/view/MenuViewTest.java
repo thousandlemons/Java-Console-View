@@ -4,8 +4,8 @@ public class MenuViewTest {
 
 
     public static void main(String[] args) {
-        ActionView simpleAction = new SimpleActionViewTest();
-        ActionView simpleAction1 = new SimpleActionViewTest();
+        ActionView simpleAction = new SimpleAction();
+        ActionView simpleAction1 = new SimpleAction();
         MenuView menuView = new MenuView("Welcome!", "");
         MenuView menuView1 = new MenuView("Submenu", "Submenu");
 

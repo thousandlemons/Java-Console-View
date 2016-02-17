@@ -11,7 +11,7 @@
 
     <artifactId>console-view</artifactId>
 
-    <version>2.0</version>
+    <version>3.0</version>
 
     <dependencies>
         <!-- junit 4 -->
@@ -93,7 +93,7 @@
                 <configuration>
                     <serverId>ossrh</serverId>
                     <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                    <autoReleaseAfterClose>false</autoReleaseAfterClose>
                 </configuration>
             </plugin>
 

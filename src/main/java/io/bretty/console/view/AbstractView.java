@@ -6,14 +6,10 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 /**
- * The parent class of all View classes, which defines infrastructure attributes (e.g. {@code parentView} and methods (e.g. {@code read()}
+ * The parent class of all View classes, which defines infrastructure attributes (e.g. {@code parentView} and methods (e.g. {@code prompt()}
  */
 
-
 public abstract class AbstractView {
-
-
-    public static final String DEFAULT_ERROR_MESSAGE = "Invalid input. Please try again: ";
 
     /**
      * the parent view of the current view
@@ -32,10 +28,11 @@ public abstract class AbstractView {
      */
     protected String nameInParentMenu;
 
+
     /**
-     * The message to display when the user inputs an invalid value
+     * the configuration of default strings in the UI
      */
-    protected String inputErrorMessage = DEFAULT_ERROR_MESSAGE;
+    protected ViewConfig viewConfig;
 
     /**
      * the {@code Scanner} to handle user command line input
@@ -52,17 +49,20 @@ public abstract class AbstractView {
     public AbstractView(String runningTitle, String nameInParentMenu) {
         this.runningTitle = runningTitle;
         this.nameInParentMenu = nameInParentMenu;
+        this.viewConfig = ViewConfig.DEFAULT;
     }
 
     /**
-     * @param runningTitle      see {@link io.bretty.console.view.AbstractView#runningTitle runningTitle}
-     * @param nameInParentMenu  see {@link io.bretty.console.view.AbstractView#nameInParentMenu nameInParentView}
-     * @param inputErrorMessage see{@link io.bretty.console.view.AbstractView#inputErrorMessage inputErrorMessage}
+     * create a view with your own choice of words
+     *
+     * @param runningTitle     see {@link io.bretty.console.view.AbstractView#runningTitle runningTitle}
+     * @param nameInParentMenu see {@link io.bretty.console.view.AbstractView#nameInParentMenu nameInParentView}
+     * @param viewConfig
      */
-    public AbstractView(String runningTitle, String nameInParentMenu, String inputErrorMessage) {
+    public AbstractView(String runningTitle, String nameInParentMenu, ViewConfig viewConfig) {
         this.runningTitle = runningTitle;
         this.nameInParentMenu = nameInParentMenu;
-        this.inputErrorMessage = inputErrorMessage;
+        this.viewConfig = viewConfig;
     }
 
     /**
@@ -71,20 +71,85 @@ public abstract class AbstractView {
     public abstract void display();
 
     /**
-     * if {@code this.parentView != null}, go back to the parent view;
-     * else, quit.
+     * Override this method to execute your own logic when the view is going back to the parent view
+     * Remember to call "super.onBack()" after your own logic
+     */
+    protected void onBack() {
+
+    }
+
+    /**
+     * Override this method to execute your own logic when the user is quiting (i.e. this view doesn't have any parent view)
+     * Remember to call "super.onQuit()" after your own logic
+     */
+    protected void onQuit() {
+        this.println();
+        this.println(this.viewConfig.getQuitMessage());
+    }
+
+    /**
+     * Try to go back to the parent view.
+     * if the parent view is null, then print quit message;
+     * else if the parent view is a menu, then call the parent {@code .display()}
+     * else if the parent view is an action, then just return without printing anything
      */
     protected void goBack() {
-        if (this.parentView != null) {
+        if (this.parentView != null && this.parentView instanceof MenuView) {
+            this.onBack();
             this.parentView.display();
-        } else {
-            System.out.println();
-            System.out.println("Shutting down... ");
+        } else if (this.parentView == null) {
+            this.onQuit();
         }
     }
 
     /**
-     * A wrapper of {@code System.out.print(Object o);}
+     * print the default pause message, and the user may press enter to continue.
+     */
+    protected void pause() {
+        this.println();
+        this.print(this.viewConfig.getPauseMessage());
+        this.keyboard.nextLine();
+    }
+
+    /**
+     * Show confirmation dialog; if confirmed, return; else, print {@code this.viewConfig.actionCanceledMessage}
+     *
+     * @param warningMessage e.g. "Make a booking now?"
+     * @return true if user has confirmed; false otherwise
+     */
+    protected boolean confirmDialog(String warningMessage) {
+        String input = this.prompt(warningMessage + this.viewConfig.getConfirmOption(), String.class);
+        input = input.replace("\n", "");
+        boolean confirmed = this.viewConfig.getConfirmValidator().isValid(input);
+        if (!confirmed) {
+            this.actionCanceled();
+        }
+        return confirmed;
+    }
+
+    /**
+     * print {@code this.viewConfig.actionCanceledMessage}
+     */
+    protected void actionCanceled() {
+        this.println(this.viewConfig.getActionCanceledMessage());
+    }
+
+    /**
+     * print {@code this.viewConfig.actionSuccessfulMessage}
+     */
+    protected void actionSuccessful() {
+        this.println(this.viewConfig.getActionSuccessfulMessage());
+    }
+
+    /**
+     * print {@code this.viewConfig.actionFailedMessage}
+     */
+    protected void actionFailed() {
+        this.println(this.viewConfig.getActionFailedMessage());
+    }
+
+    /**
+     * A wrapper of {@code System.out.print(Object o)}
      *
      * @param o the object to print
      */
@@ -93,7 +158,7 @@ public abstract class AbstractView {
     }
 
     /**
-     * A wrapper of {@code System.out.println(Object o);}
+     * A wrapper of {@code System.out.println(Object o)}
      *
      * @param o the object to print
      */
@@ -102,7 +167,7 @@ public abstract class AbstractView {
     }
 
     /**
-     * A wrapper of {@code System.out.println(Object o);}
+     * A wrapper of {@code System.out.println()}
      */
     protected void println() {
         System.out.println();
@@ -122,8 +187,8 @@ public abstract class AbstractView {
      * @param <T>           Expected class
      * @return the scanned input of the expected type
      */
-    protected <T> T read(String message, Class<T> expectedClass) {
-        return this.read(message, expectedClass, null);
+    protected <T> T prompt(String message, Class<T> expectedClass) {
+        return this.prompt(message, expectedClass, null);
     }
 
 
@@ -142,14 +207,13 @@ public abstract class AbstractView {
      * @param <T>           Expected class
      * @return the scanned input of the expected type
      */
-    protected <T> T read(String message, Class<T> expectedClass, Validator<T> validator) {
+    protected <T> T prompt(String message, Class<T> expectedClass, Validator<T> validator) {
         boolean isValid = false;
         Object input = null;
         T output = null;
+        this.print(message);
         while (!isValid) {
             try {
-                System.out.print(message);
-
                 if (expectedClass == Integer.class) {
                     input = keyboard.nextInt();
                 } else if (expectedClass == Double.class) {
@@ -176,7 +240,7 @@ public abstract class AbstractView {
 
                 isValid = validator == null || validator.isValid(output);
             } catch (InputMismatchException e) {
-                System.out.print(this.inputErrorMessage);
+                this.print(this.viewConfig.getInputErrorMessage());
             } finally {
                 if (expectedClass != String.class) {
                     keyboard.nextLine();
@@ -209,5 +273,13 @@ public abstract class AbstractView {
 
     public void setNameInParentMenu(String nameInParentMenu) {
         this.nameInParentMenu = nameInParentMenu;
+    }
+
+    public ViewConfig getViewConfig() {
+        return viewConfig;
+    }
+
+    public void setViewConfig(ViewConfig viewConfig) {
+        this.viewConfig = viewConfig;
     }
 }

@@ -10,34 +10,19 @@ import java.util.List;
 
 public class MenuView extends AbstractView {
 
-    public static final String DEFAULT_SELECTION_MESSAGE = "Please enter a number to continue: ";
-    public static final String DEFAULT_BACK_MENU_NAME = "Back";
-    public static final String DEFAULT_QUIT_MENU_NAME = "Quit";
     /**
      * a list of {@code AbstractView} objects to be displayed in the menu as available options
      */
     protected List<AbstractView> menuItems = new ArrayList<>();
-    private String selectionMessage = DEFAULT_SELECTION_MESSAGE;
-    /**
-     * Name of the menu "Back"; you can rename it something like "GO BACK"
-     */
-    private String backMenuName = DEFAULT_BACK_MENU_NAME;
-    /**
-     * Name of the menu "Quit"; you can rename it something like "Exit"
-     */
-    private String quitMenuName = DEFAULT_QUIT_MENU_NAME;
+
     private IndexNumberFormatter indexNumberFormatter = DefaultIndexNumberFormatter.INSTANCE;
 
     public MenuView(String runningTitle, String nameInParentMenu) {
         super(runningTitle, nameInParentMenu);
     }
 
-    public MenuView(String runningTitle, String nameInParentMenu, String inputErrorMessage, String selectionMessage, String backMenuName, String quitMenuName, IndexNumberFormatter indexNumberFormatter) {
-        super(runningTitle, nameInParentMenu, inputErrorMessage);
-        this.selectionMessage = selectionMessage;
-        this.backMenuName = backMenuName;
-        this.quitMenuName = quitMenuName;
-        this.indexNumberFormatter = indexNumberFormatter;
+    public MenuView(String runningTitle, String nameInParentMenu, ViewConfig viewConfig) {
+        super(runningTitle, nameInParentMenu, viewConfig);
     }
 
     /**
@@ -54,6 +39,10 @@ public class MenuView extends AbstractView {
         this.menuItems.remove(index);
     }
 
+    public void removeMenuItem(AbstractView menuItem){
+        this.menuItems.remove(menuItem);
+    }
+
     public List<AbstractView> getMenuItems() {
         return new ArrayList<>(this.menuItems);
     }
@@ -66,28 +55,13 @@ public class MenuView extends AbstractView {
         return index >= 1 && index <= this.menuItems.size() + 1;
     }
 
-    private int readSelection() {
-
-        int selection;
-
-        try {
-            selection = keyboard.nextInt();
-        } catch (InputMismatchException e) {
-            selection = -1;
-        } finally {
-            keyboard.nextLine();
-        }
-
-        return selection;
-    }
-
     @Override
     public void display() {
 
-        System.out.println();
+        this.println();
 
         // print running title (e.g. "Create Item")
-        System.out.println(this.runningTitle);
+        this.println(this.runningTitle);
 
         // print all menu items
         // e.g.
@@ -96,23 +70,24 @@ public class MenuView extends AbstractView {
         // 3) ...
 
         for (int i = 0; i < this.menuItems.size(); ++i) {
-            System.out.println(this.indexNumberFormatter.format(i) + this.menuItems.get(i).nameInParentMenu);
+            this.println(this.indexNumberFormatter.format(i) + this.menuItems.get(i).nameInParentMenu);
         }
 
-        String backOrQuit = this.parentView == null ? this.quitMenuName : this.backMenuName;
+        String backOrQuit = this.parentView == null ? this.viewConfig.getQuitMenuName() : this.viewConfig.getBackMenuName();
 
         // 4) Back/quit; always the last index
-        System.out.println(this.indexNumberFormatter.format(this.menuItems.size()) + backOrQuit);
+        this.println(this.indexNumberFormatter.format(this.menuItems.size()) + backOrQuit);
 
-        // prompt for selection
-        System.out.print(this.selectionMessage);
 
-        // get a valid integer
-        int selection = this.readSelection();
-        while (!isValidIndex(selection)) {
-            System.out.print(this.inputErrorMessage);
-            selection = this.readSelection();
-        }
+        // get a valid index number
+        Validator<Integer> indexNumberValidator = new Validator<Integer>() {
+            @Override
+            public boolean isValid(Integer index) {
+                return isValidIndex(index);
+            }
+        };
+
+        int selection = this.prompt(this.viewConfig.getMenuSelectionMessage(), Integer.class, indexNumberValidator);
 
         // go parentView
         if (selection == this.menuItems.size() + 1) {
