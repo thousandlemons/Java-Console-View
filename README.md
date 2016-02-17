@@ -1,6 +1,6 @@
 ## Installation
 
-### Maven Repo
+### Maven
 
 ```xml
 <dependency>
