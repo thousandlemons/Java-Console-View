@@ -12,7 +12,7 @@
 
 ### JAR Release
 
-Download the package [`console-view-3.1.jar`](https://github.com/nathanielove/Java-Console-View/blob/master/console-view-3.0.jar?raw=true) and add it to your project resources.
+Download the package [`console-view-3.1.jar`](https://github.com/nathanielove/Java-Console-View/blob/master/console-view-3.1.jar?raw=true) and add it to your project resources.
 
 ## Content
 
