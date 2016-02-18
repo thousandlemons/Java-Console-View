@@ -17,8 +17,8 @@ public class ViewConfig {
 
     public static final String DEFAULT_INPUT_ERROR_MESSAGE = "Invalid input. Please try again: ";
     public static final String DEFAULT_MENU_SELECTION_MESSAGE = "Please enter a number to continue: ";
-    public static final String DEFAULT_PAUSE_MESSAGE = "Press enter to continue...";
-    public static final String DEFAULT_QUIT_MESSAGE = "Shutting down...";
+    public static final String DEFAULT_PAUSE_MESSAGE = "\nPress enter to continue...";
+    public static final String DEFAULT_QUIT_MESSAGE = "\nShutting down...";
     public static final String DEFAULT_BACK_MENU_NAME = "Back";
     public static final String DEFAULT_QUIT_MENU_NAME = "Quit";
     public static final String DEFAULT_CONFIRM_OPTION = " (y/N) ";

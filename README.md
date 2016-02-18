@@ -6,13 +6,13 @@
 <dependency>
   <groupId>io.bretty</groupId>
   <artifactId>console-view</artifactId>
-  <version>3.0</version>
+  <version>3.1</version>
 </dependency>
 ```
 
 ### JAR Release
 
-Download the package [`console-view-3.0.jar`](https://github.com/nathanielove/Java-Console-View/blob/master/console-view-3.0.jar?raw=true) and add it to your project resources.
+Download the package [`console-view-3.1.jar`](https://github.com/nathanielove/Java-Console-View/blob/master/console-view-3.0.jar?raw=true) and add it to your project resources.
 
 ## Content
 
@@ -310,7 +310,6 @@ Make booking now? (y/N) p
 Action canceled.
 
 Press enter to continue...
-
 ```
 
 Actually, you can call the `pause()` method anywhere anytime. But notice that there will be a new line above the pause message.
@@ -323,30 +322,28 @@ Actually, you can call the `pause()` method anywhere anytime. But notice that th
 
 In the latest update, we added support for setting an `ActionView` object as the parent view of a `MenuView` object, so that you can freely create any `MenuView` object dynamically at runtime.
 
-The following code example demonstrates how it works.
+The following example demonstrates how it works.
 
 ```java
-class ViewHistoryAction extends ActionView{
-	ViewHistoryAction(){
-		super("Booking History", "View history");
-	}
+class MyAction extends ActionView{
+	...
 	
 	@Override
 	public void executeCustomAction() {
-	    String line = this.prompt("Please enter a line: ", String.class);
-	    
-	    // create a MenuView object dynamically from user input
-	    MenuView menuView = new MenuView("Submenu " + line, "Submenu " + line);
-	    
-	    // if you want the users to be able to get back here from the menu,
-	    // set the parent view as "this"; or if you want to redirect the users 
-	    // to some other view, you may pass in that view object as parameter.
-	    // however, if you don't set any parent view, the parenetView will be null,
-	    // and user can only quit from this menu view
-	    menuView.setParentView(this);
-	    
-	    // run the view you just created
-	    menuView.display();
+		String line = this.prompt("Please enter a line: ", String.class);
+		
+		// create a MenuView object dynamically from user input
+		MenuView menuView = new MenuView("Submenu " + line, "Submenu " + line);
+		
+		// if you want the users to be able to get back here from the menu,
+		// set the parent view as "this"; or if you want to redirect the users 
+		// to some other view, you may pass in that view object as parameter.
+		// however, if you don't set any parent view, the parenetView will be null,
+		// and user can only quit from this menu view
+		menuView.setParentView(this);
+		
+		// run the view you just created
+		menuView.display();
 	}
 }
 ```
@@ -367,7 +364,22 @@ To build a custom `ViewConfig` object, you'll have to use the `ViewConfig.Builde
 
 Please notice that the `ViewConfig` is template-based. When you create a `ViewConfig.Builder` object, all the fields are initialized to the default values. When you change some of the fields using the setters, all others that you didn't change will continue to use the default value when you `.build()`.
 
-The `ViewConfig.Builder` allows you to replace any string in the default UI with your own choice of words. To use your custom `ViewConfig` object, simply pass it in the constructor when you are creating a view object. For example,
+The `ViewConfig.Builder` allows you to replace any string in the default UI  with your own choice of words. Here is a full list of the system default strings that you could choose to replace with your own:
+
+|Variable Name| Default String|
+|---|---|
+|Input Error Message | `"Invalid input. Please try again: "` |
+|Menu Selection Message | `"Please enter a number to continue: "` |
+|Pause Message | `"\nPress enter to continue..."` | 
+|Quit Message| `"\nShutting down..."` |
+|Action Canceled Message | `"Action canceled."` |
+|Action Successful Message | `"Action successful!"`|
+|Action Failed Message | `"Action failed."`|
+|Back Menu Name | `"Back"` |
+|Quit Menu Name | `"Quit"` |
+|Confirm Option | `" (y/N) "` |  
+
+To use your custom `ViewConfig` object, simply pass it in the constructor when you are creating a view object. For example,
 
 ```java
 	ActionView actionView = new ActionView("Sample Action", "Sample action", viewConfig){
@@ -378,6 +390,39 @@ The `ViewConfig.Builder` allows you to replace any string in the default UI with
 	};
 	
 	MenuView menuView = new MenuView("Sample menu view", "", viewConfig);
+```
+
+Another thing to notice is that, if you want to use your own comfirmation option in [Confirmation Dialog](#confirmation-dialog), you will need to pass in both your instruction string and a custom `Validator<String>` object whose `isValid()` method returns `true` when the users enters the option that reperesents the positive confimation action. For example, you can customize the default confirmation dialog in this way:
+
+```java
+	String confirmOption = "(yes/no)";
+
+	Validator<String> confirmValidator = new Validator<String>() {
+		@Override
+		public boolean isValid(String s) {
+		return s.toLowerCase().equals("yes");
+		}
+	};
+
+	ViewConfig viewConfig = new ViewConfig.Builder()
+		.setConfirm(confirmOption, confirmValidator)
+		.build();
+```
+
+Then you may use the confirmation dialog in your `ActionView` subclass in this way:
+
+```java
+	boolean confirm = this.confirmDialog("Are you sure?");
+	if(confirm){
+		this.actionSuccessful();
+	}
+```
+
+The console outuput will be:
+
+```text
+Are you sure? (yes/no) yes
+Action successful!
 ```
 
 ### <a name="menu-subclass"></a> Overriding `onBack()` and `onQuit()`

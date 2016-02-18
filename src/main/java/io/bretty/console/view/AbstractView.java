@@ -83,7 +83,6 @@ public abstract class AbstractView {
      * Remember to call "super.onQuit()" after your own logic
      */
     protected void onQuit() {
-        this.println();
         this.println(this.viewConfig.getQuitMessage());
     }
 
@@ -106,7 +105,6 @@ public abstract class AbstractView {
      * print the default pause message, and the user may press enter to continue.
      */
     protected void pause() {
-        this.println();
         this.print(this.viewConfig.getPauseMessage());
         this.keyboard.nextLine();
     }
