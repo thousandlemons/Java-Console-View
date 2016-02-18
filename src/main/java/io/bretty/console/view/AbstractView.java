@@ -88,16 +88,26 @@ public abstract class AbstractView {
 
     /**
      * Try to go back to the parent view.
-     * if the parent view is null, then print quit message;
+     * if the parent view is null, then print quit message and terminate the program;
      * else if the parent view is a menu, then call the parent {@code .display()}
      * else if the parent view is an action, then just return without printing anything
      */
     protected void goBack() {
-        if (this.parentView != null && this.parentView instanceof MenuView) {
+
+        // if there is a parent view, call .onback()
+        if (this.parentView != null) {
             this.onBack();
-            this.parentView.display();
-        } else if (this.parentView == null) {
+
+            // if the parent view is a menu, display that menu
+            if(this.parentView instanceof MenuView){
+                this.parentView.display();
+            }
+        }
+
+        // if there is no parent view, call .onBack() and quit
+        else {
             this.onQuit();
+            System.exit(0);
         }
     }
 

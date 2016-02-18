@@ -12,8 +12,8 @@
 
 ### Downloads
 
-* Download package [`console-view-3.1.jar`](https://github.com/nathanielove/Java-Console-View/blob/master/console-view-3.1.jar?raw=true)
-* Download package, source and javadoc from: [Artifect Directory on Maven Central Repository](https://repo1.maven.org/maven2/io/bretty/console-view/3.1/)
+* Download package [`console-view-3.2.jar`](https://github.com/nathanielove/Java-Console-View/blob/master/console-view-3.2.jar?raw=true)
+* Download package, source and javadoc from: [Artifect Directory on Maven Central Repository](https://repo1.maven.org/maven2/io/bretty/console-view/3.2/)
 
 ## Content
 
