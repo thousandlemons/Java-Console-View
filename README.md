@@ -10,9 +10,10 @@
 </dependency>
 ```
 
-### JAR Release
+### Downloads
 
-Download the package [`console-view-3.1.jar`](https://github.com/nathanielove/Java-Console-View/blob/master/console-view-3.1.jar?raw=true) and add it to your project resources.
+* Download package [`console-view-3.1.jar`](https://github.com/nathanielove/Java-Console-View/blob/master/console-view-3.1.jar?raw=true)
+* Download package, source and javadoc from: [Artifect Directory on Maven Central Repository](https://repo1.maven.org/maven2/io/bretty/console-view/3.1/)
 
 ## Content
 
