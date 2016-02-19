@@ -8,13 +8,6 @@ public class ViewConfig {
 
     public static final ViewConfig DEFAULT = new ViewConfig();
 
-    public static final Validator<String> DEFAULT_CONFIRM_VALIDATOR = new Validator<String>() {
-        @Override
-        public boolean isValid(String s) {
-            return s.equals("y") || s.equals("Y");
-        }
-    };
-
     public static final String DEFAULT_INPUT_ERROR_MESSAGE = "Invalid input. Please try again: ";
     public static final String DEFAULT_MENU_SELECTION_MESSAGE = "Please enter a number to continue: ";
     public static final String DEFAULT_PAUSE_MESSAGE = "\nPress enter to continue...";
@@ -26,23 +19,61 @@ public class ViewConfig {
     public static final String DEFAULT_ACTION_SUCCESSFUL_MESSAGE = "Action successful!";
     public static final String DEFAULT_ACTION_FAILED_MESSAGE = "Action failed.";
 
-    private String inputErrorMessage = DEFAULT_INPUT_ERROR_MESSAGE;
-    private String menuSelectionMessage = DEFAULT_MENU_SELECTION_MESSAGE;
-    private String pauseMessage = DEFAULT_PAUSE_MESSAGE;
-    private String quitMessage = DEFAULT_QUIT_MESSAGE;
-    private String backMenuName = DEFAULT_BACK_MENU_NAME;
-    private String quitMenuName = DEFAULT_QUIT_MENU_NAME;
-    private String confirmOption = DEFAULT_CONFIRM_OPTION;
-    private String actionCanceledMessage = DEFAULT_ACTION_CANCELED_MESSAGE;
-    private String actionSuccessfulMessage = DEFAULT_ACTION_SUCCESSFUL_MESSAGE;
-    private String actionFailedMessage = DEFAULT_ACTION_FAILED_MESSAGE;
+    private static class DefaultIndexNumberFormatter implements IndexNumberFormatter{
 
-    private IndexNumberFormatter indexNumberFormatter = DefaultIndexNumberFormatter.INSTANCE;
+        static final IndexNumberFormatter INSTANCE = new DefaultIndexNumberFormatter();
 
-    private Validator<String> confirmValidator = DEFAULT_CONFIRM_VALIDATOR;
+        private DefaultIndexNumberFormatter(){
+
+        }
+
+        @Override
+        public String format(int index) {
+            return (index + 1) + ") ";
+        }
+    }
+
+    private static class DefaultConfirmValidator implements Validator<String>{
+
+        static final DefaultConfirmValidator INSTANCE = new DefaultConfirmValidator();
+
+        private DefaultConfirmValidator(){
+
+        }
+
+        @Override
+        public boolean isValid(String s) {
+            return s.equals("y") || s.equals("Y");
+        }
+    }
+
+    private String inputErrorMessage;
+    private String menuSelectionMessage;
+    private String pauseMessage;
+    private String quitMessage;
+    private String backMenuName;
+    private String quitMenuName;
+    private String confirmOption;
+    private String actionCanceledMessage;
+    private String actionSuccessfulMessage;
+    private String actionFailedMessage;
+
+    private IndexNumberFormatter indexNumberFormatter;
+    private Validator<String> confirmValidator;
 
     private ViewConfig() {
-
+        this.inputErrorMessage = DEFAULT_INPUT_ERROR_MESSAGE;
+        this.menuSelectionMessage = DEFAULT_MENU_SELECTION_MESSAGE;
+        this.pauseMessage = DEFAULT_PAUSE_MESSAGE;
+        this.quitMessage = DEFAULT_QUIT_MESSAGE;
+        this.backMenuName = DEFAULT_BACK_MENU_NAME;
+        this.quitMenuName = DEFAULT_QUIT_MENU_NAME;
+        this.confirmOption = DEFAULT_CONFIRM_OPTION;
+        this.actionCanceledMessage = DEFAULT_ACTION_CANCELED_MESSAGE;
+        this.actionSuccessfulMessage = DEFAULT_ACTION_SUCCESSFUL_MESSAGE;
+        this.actionFailedMessage = DEFAULT_ACTION_FAILED_MESSAGE;
+        this.indexNumberFormatter = DefaultIndexNumberFormatter.INSTANCE;
+        this.confirmValidator = DefaultConfirmValidator.INSTANCE;
     }
 
     public String getInputErrorMessage() {

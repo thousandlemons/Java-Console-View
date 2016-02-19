@@ -6,14 +6,14 @@
 <dependency>
   <groupId>io.bretty</groupId>
   <artifactId>console-view</artifactId>
-  <version>3.1</version>
+  <version>3.3</version>
 </dependency>
 ```
 
 ### Downloads
 
-* Download package [`console-view-3.2.jar`](https://github.com/nathanielove/Java-Console-View/blob/master/console-view-3.2.jar?raw=true)
-* Download package, source and javadoc from: [Artifect Directory on Maven Central Repository](https://repo1.maven.org/maven2/io/bretty/console-view/3.2/)
+* Download package [`console-view-3.3.jar`](https://github.com/nathanielove/Java-Console-View/blob/master/console-view-3.3.jar?raw=true)
+* Download package, source and javadoc from: [Artifect Directory on Maven Central Repository](https://repo1.maven.org/maven2/io/bretty/console-view/3.3/)
 
 ## Content
 

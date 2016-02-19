@@ -15,8 +15,6 @@ public class MenuView extends AbstractView {
      */
     protected List<AbstractView> menuItems = new ArrayList<>();
 
-    private IndexNumberFormatter indexNumberFormatter = DefaultIndexNumberFormatter.INSTANCE;
-
     public MenuView(String runningTitle, String nameInParentMenu) {
         super(runningTitle, nameInParentMenu);
     }
@@ -70,13 +68,13 @@ public class MenuView extends AbstractView {
         // 3) ...
 
         for (int i = 0; i < this.menuItems.size(); ++i) {
-            this.println(this.indexNumberFormatter.format(i) + this.menuItems.get(i).nameInParentMenu);
+            this.println(this.viewConfig.getIndexNumberFormatter().format(i) + this.menuItems.get(i).nameInParentMenu);
         }
 
         String backOrQuit = this.parentView == null ? this.viewConfig.getQuitMenuName() : this.viewConfig.getBackMenuName();
 
         // 4) Back/quit; always the last index
-        this.println(this.indexNumberFormatter.format(this.menuItems.size()) + backOrQuit);
+        this.println(this.viewConfig.getIndexNumberFormatter().format(this.menuItems.size()) + backOrQuit);
 
 
         // get a valid index number
