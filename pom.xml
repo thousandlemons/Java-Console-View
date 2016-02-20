@@ -11,7 +11,7 @@
 
     <artifactId>console-view</artifactId>
 
-    <version>3.3</version>
+    <version>3.4</version>
 
     <dependencies>
         <!-- junit 4 -->

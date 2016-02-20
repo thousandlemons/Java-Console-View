@@ -245,13 +245,15 @@ public abstract class AbstractView {
                 }
 
                 output = expectedClass.cast(input);
-
                 isValid = validator == null || validator.isValid(output);
             } catch (InputMismatchException e) {
-                this.print(this.viewConfig.getInputErrorMessage());
+                // nothing
             } finally {
                 if (expectedClass != String.class) {
                     keyboard.nextLine();
+                }
+                if(!isValid){
+                    this.print(this.viewConfig.getInputErrorMessage());
                 }
             }
         }
