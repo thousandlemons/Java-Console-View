@@ -213,6 +213,19 @@ Invalid input. Please try again: 15
 Your integer is 15
 ```
 
+You may pass in any `Class<T>` object in the following list as the second parameter in the `prompt()` method (to replace the `Integer.class` in the example above)
+
+* BigDecimal
+* BigInteger
+* Boolean
+* Byte
+* Double
+* Float
+* Integer
+* Long
+* Short
+* String
+
 Also, you may use your custom validator to validate user input. For example:
 
 ```java
@@ -336,11 +349,7 @@ class MyAction extends ActionView{
 		// create a MenuView object dynamically from user input
 		MenuView menuView = new MenuView("Submenu " + line, "Submenu " + line);
 		
-		// if you want the users to be able to get back here from the menu,
-		// set the parent view as "this"; or if you want to redirect the users 
-		// to some other view, you may pass in that view object as parameter.
-		// however, if you don't set any parent view, the parenetView will be null,
-		// and user can only quit from this menu view
+		// NOTICE: PLEASE READ THE EXPLANATION BELOW FOR DETAILED USAGE
 		menuView.setParentView(this);
 		
 		// run the view you just created
@@ -348,6 +357,18 @@ class MyAction extends ActionView{
 	}
 }
 ```
+
+Here's an important thing to notice - how to use the `setParentView()` method.
+
+If you add a menu item to a `MenuView` through the `addMenuItem()` method, no matter that menu item is an `ActionView` or another `MenuView` as submenu, you don't need to set the parent view for that menu item manually.
+
+However, if you create a view dynamically in an `ActionView`, you may need to consider how to set the parent view of the view that you newly created, since your decision will affect the flow of the program.
+
+If you set a `MenuView` as the parent of the view that you newly created, once the user tries to go back from the view you newly created, either by entering the corresponding index number for "Back" in `MenuView`, or just simply by finishing the program flow in an `ActionView`, the`display()` method on the `MenuView` that you set as parent will be called again.
+
+If you set an `ActionView` as the parent, the system will do nothing when the view that you newly created finishes running. It will return to the point after where you left off by calling `display()` to run the view that you newly created.
+
+Finally, if you don't set anything as parent view, the system will execute the [finalization procedure `onQuit()`](#menu-subclass) once the view you newly created finishes running, and then ends the program.
 
 ### <a name="customization"></a> Customization - Building Your Own `ViewConfig`
 
