@@ -88,11 +88,11 @@ Booking History
 2) Remove all histories
 3) Back
 ```
-By entering the number for "Back", the user will go back to the parent menu, which is "Welcome..." in this case.
+By entering the number for "Back", the user will go back to the parent view, which is "Welcome..." in this case.
 
 ### <a name="action-view"></a> Action View
 
-`ActionView` represents a single leaf functionality of your app, for example, to book a taxi. The console out put of it will be something like:
+`ActionView` represents a single leaf functionality of your app, for example, to book a taxi. The console output might be something like:
 
 ```text
 Booking a Taxi									// this.runningTitle
@@ -104,7 +104,7 @@ Press enter to continue...						// this.viewConfig.pauseMessage
 
 The custom logic is the part where you need to write the code specific to your app.
 
-The view will pause after finishing all custom logic by displaying `this.viewConfig.pauseMessage`, which is "Press enter to continue..." by default. After the user presses enter, it will go back and display again the parent menu view.
+The view will pause after finishing all custom logic by displaying `this.viewConfig.pauseMessage`, which is "Press enter to continue..." by default. After the user presses enter, it will go back and display again the parent view.
 
 
 ## <a name="quick-start"></a> Quick Start
@@ -366,7 +366,7 @@ However, if you create a view dynamically in an `ActionView`, you may need to co
 
 If you set a `MenuView` as the parent of the view that you newly created, once the user tries to go back from the view you newly created, either by entering the corresponding index number for "Back" in `MenuView`, or just simply by finishing the program flow in an `ActionView`, the`display()` method on the `MenuView` that you set as parent will be called again.
 
-If you set an `ActionView` as the parent, the system will do nothing when the view that you newly created finishes running. It will return to the point after where you left off by calling `display()` to run the view that you newly created.
+If you set an `ActionView` as the parent, the system will do nothing when the view that you newly created finishes running. It will return to the point immediately after where you left off by calling `display()` to run the view that you newly created.
 
 Finally, if you don't set anything as parent view, the system will execute the [finalization procedure `onQuit()`](#menu-subclass) once the view you newly created finishes running, and then ends the program.
 
@@ -417,7 +417,7 @@ To use your custom `ViewConfig` object, simply pass it in the constructor when y
 Another thing to notice is that, if you want to use your own comfirmation option in [Confirmation Dialog](#confirmation-dialog), you will need to pass in both your instruction string and a custom `Validator<String>` object whose `isValid()` method returns `true` when the users enters the option that reperesents the positive confimation action. For example, you can customize the default confirmation dialog in this way:
 
 ```java
-	String confirmOption = "(yes/no)";
+	String confirmOption = " (yes/no) ";
 
 	Validator<String> confirmValidator = new Validator<String>() {
 		@Override
