@@ -1,6 +1,18 @@
-## Installation
+# Java Console View: Instantly Build the View Layer of Your Java Command Line App 
 
-### Maven
+[![maven central](https://img.shields.io/badge/maven%20central-3.4-brightgreen.svg)](https://search.maven.org/#artifactdetails%7Cio.bretty%7Cconsole-view%7C3.4%7Cjar)
+
+This framework provides a way to quickly construct the View layer of a Java command line app.
+
+No more worries about anything like printing menus or validating user inputs. Just focus on your app logic.
+
+## Latest Release
+
+The most recent release is Console View 3.4, released 20 Feb 2016.
+
+Version 3.4 API Docs: [Package io.bretty.console.view](https://www.javadoc.io/doc/io.bretty/console-view/3.4)
+
+To add a dependency using Maven, use the following:
 
 ```xml
 <dependency>
@@ -10,24 +22,15 @@
 </dependency>
 ```
 
-### Gradle
+To add a dependency using Gradle:
 
 ```groovy
 compile 'io.bretty:console-view:3.4'
 ```
 
-### Ivy
-```xml
-<dependency org="io.bretty" name="console-view" rev="3.4" />
-```
-
-### More Info & Downloads
-
-Please visit the [aritifect page on the Central Repository](https://search.maven.org/#artifactdetails%7Cio.bretty%7Cconsole-view%7C3.4%7Cjar)
-
 ## Content
 
-* [Overview](#overview)
+1. [Overview](#overview)
 	* [Introduction](#introduction)
 	* [Menu View](#menu-view)
 	* [Action View](#action-view)
@@ -50,8 +53,6 @@ Please visit the [aritifect page on the Central Repository](https://search.maven
 ## <a name="overview"></a> Overview
 
 ### <a name="introduction"></a> Introduction
-
-This framework provides a way to quickly construct the View layer of a Java command line app.
 
 **`AbstractView`** is the ultimate parent class of all classes in the View layer. This class has only one abstract public method, `.display()`, which starts this view. It also provides a handful of [UI components](#ui-components) to gracefully handle user interaction, user input and validation, etc.
 
