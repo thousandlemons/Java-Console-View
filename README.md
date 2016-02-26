@@ -10,10 +10,20 @@
 </dependency>
 ```
 
-### Downloads
+### Gradle
 
-* Download package [`console-view-3.4.jar`](https://github.com/nathanielove/Java-Console-View/blob/master/console-view-3.4.jar?raw=true)
-* Download package, source and javadoc from: [Artifect Directory on Maven Central Repository](https://repo1.maven.org/maven2/io/bretty/console-view/3.4/)
+```groovy
+compile 'io.bretty:console-view:3.4'
+```
+
+### Ivy
+```xml
+<dependency org="io.bretty" name="console-view" rev="3.4" />
+```
+
+### More Info & Downloads
+
+Please visit the [aritifect page on the Central Repository](https://search.maven.org/#artifactdetails%7Cio.bretty%7Cconsole-view%7C3.4%7Cjar)
 
 ## Content
 
