@@ -76,18 +76,18 @@ The workflow of the `.display()` method in `MenuView`:
 The console output of the root view of a sample taxi booking app is:
 
 ```text
-Welcome to the taxi booking service center.		// this.runningTitle
-1) Book a taxi									// item in this.menuItems
-2) Check booking status							// item in this.menuItems
-3) Booking history								// item in this.menuItems
-4) Quit											// this.viewConfig.backMenuName or this.viewConfig.quitMenuName
-Please enter a number to continue: 				// this.viewConfig.selectionMessage
+Welcome to the taxi booking service center.  // this.runningTitle
+1) Book a taxi                               // item in this.menuItems
+2) Check booking status                      // item in this.menuItems
+3) Booking history                           // item in this.menuItems
+4) Quit                                      // this.viewConfig.backMenuName or this.viewConfig.quitMenuName
+Please enter a number to continue:           // this.viewConfig.selectionMessage
 ```
 
 If invalid input occurs, there will be an error message.
 
 ```text
-Invalid input. Please try again: 				// this.viewConfig.inputErrorMessage
+Invalid input. Please try again:             // this.viewConfig.inputErrorMessage
 ```
 
 Once the user enters a valid selection number, the system will call the `.display()` method on the corresponding `menuItem`.
@@ -107,11 +107,11 @@ By entering the number for "Back", the user will go back to the parent view, whi
 `ActionView` represents a single leaf functionality of your app, for example, to book a taxi. The console output might be something like:
 
 ```text
-Booking a Taxi									// this.runningTitle
+Booking a Taxi                // this.runningTitle
 // ... custom logic here
 // ...
 
-Press enter to continue...						// this.viewConfig.pauseMessage
+Press enter to continue...    // this.viewConfig.pauseMessage
 ```
 
 The custom logic is the part where you need to write the code specific to your app.
@@ -316,7 +316,7 @@ Make booking now? (y/N) y
 Your taxi is on the way!
 ```
 
-Please notice that both lower case `"y"` and upper case `"Y"` are accepted for confirmation. 
+Please notice that both lower case `'y'` and upper case `'Y'` are accepted for confirmation. 
 
 If the user enters anything else, it will be taken as "cancel", and a canceled action feedback will be printed automatically. For example,
 
@@ -325,7 +325,7 @@ Make booking now? (y/N) p
 Action canceled.
 ```
 
-*To replace the default confirmation options* `(y/N)`, *see [Customization](#customization).*
+*To replace the default confirmation options* `" (y/N) "`, *see [Customization](#customization).*
 
 ### <a name="pause"></a> Pause
 
@@ -468,5 +468,4 @@ If your menu view has a parent view, `onBack()` will be called by the system aft
 Similarly, if your menu view doesn't have a parent view, then `onQuit()` will be called by the system just before the user quits the program.
 
 Always remember to add `super.onBack()` or `super.onQuit()` as the last line of your overriding method.
-
 
