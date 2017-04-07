@@ -1,7 +1,7 @@
 # Java Console View: Instantly Build the View Layer of Your Java Command Line App 
 
 [![maven central](https://img.shields.io/badge/maven%20central-3.4-brightgreen.svg)](https://search.maven.org/#artifactdetails%7Cio.bretty%7Cconsole-view%7C3.4%7Cjar)
-[![license](https://img.shields.io/hexpm/l/plug.svg)]([![GitHub license](https://img.shields.io/github/license/mashape/apistatus.svg)](https://raw.githubusercontent.com/nathanielove/Java-Console-View/master/license.txt))
+[![license](https://img.shields.io/hexpm/l/plug.svg)]()
 
 This framework provides a way to quickly construct the View layer of a Java command line app.
 
