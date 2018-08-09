@@ -202,6 +202,11 @@ public class ViewConfig {
             return this;
         }
 
+        public Builder setInputErrorMessage(String inputErrorMessage) {
+            this.viewConfig.inputErrorMessage = inputErrorMessage;
+            return this;
+        }
+
         public ViewConfig build(){
             return this.viewConfig.copy();
         }
